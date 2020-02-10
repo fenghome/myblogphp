@@ -1,68 +1,89 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1" />
-    <meta name="robots" content="none" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0"/>
-    <meta name="generator" content="Z-BlogPHP 1.5.2 Zero" />
-    <meta name="renderer" content="webkit" />
-    <link rel="stylesheet" href="__STATIC__/index/css/admin.css" type="text/css" media="screen" />
-    <script src="__STATIC__/index/js/common.js" type="text/javascript"></script>
-    <script src="__STATIC__/index/js/md5.js" type="text/javascript"></script>
-    <script src="__STATIC__/index/js/c_admin_js_add.js" type="text/javascript"></script>
-    <title>我的博客-登录</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1" />
+  <meta name="robots" content="none" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+  <meta name="generator" content="Z-BlogPHP 1.5.2 Zero" />
+  <meta name="renderer" content="webkit" />
+  <link rel="stylesheet" href="__STATIC__/index/css/admin.css" type="text/css" media="screen" />
+  <script src="__STATIC__/index/js/common.js" type="text/javascript"></script>
+  <script src="__STATIC__/index/js/md5.js" type="text/javascript"></script>
+  <script src="__STATIC__/index/js/c_admin_js_add.js" type="text/javascript"></script>
+  <script src="__STATIC__/index/js/layer/layer.js" type="text/javascript"></script>
+  <title>我的博客-登录</title>
 </head>
+
 <body>
-<div class="bg">
-<div id="wrapper">
-  <div class="logo"><img src="__STATIC__/index/picture/none.gif" title="我的博客" alt="我的博客"/></div>
-  <div class="login">
-    <form method="post" action="#">
-    <dl>
-      <dt></dt>
-      <dd class="username"><label for="edtUserName">用户名</label><input type="text" id="edtUserName" name="edtUserName" size="20" value="" tabindex="1" /></dd>
-      <dd class="password"><label for="edtPassWord">密码</label><input type="password" id="edtPassWord" name="edtPassWord" size="20" tabindex="2" /></dd>
-    </dl>
-    <dl>
-      <dt></dt>
-      <dd class="checkbox"><input type="checkbox" name="chkRemember" id="chkRemember"  tabindex="98" /><label for="chkRemember">保持登录</label></dd>
-      <dd class="submit"><input id="btnPost" name="btnPost" type="submit" value="登录" class="button" tabindex="99"/></dd>
-    </dl>
-    <input type="hidden" name="username" id="username" value="" />
-    <input type="hidden" name="password" id="password" value="" />
-    <input type="hidden" name="savedate" id="savedate" value="1" />
-    </form>
+  <div class="bg">
+    <div id="wrapper">
+      <div class="logo">
+        <img src="__STATIC__/index/picture/none.gif" title="我的博客" alt="我的博客" />
+      </div>
+      <div class="login">
+        <form method="post" action="#">
+          <dl>
+            <dt></dt>
+            <dd class="username">
+              <label for="edtUserName">用户名</label>
+              <input type="text" id="edtUserName" name="edtUserName" size="20" value="" tabindex="1" />
+            </dd>
+            <dd class="password">
+              <label for="edtPassWord">密码</label>
+              <input type="password" id="edtPassWord" name="edtPassWord" size="20" tabindex="2" />
+            </dd>
+          </dl>
+          <dl>
+            <dt></dt>
+            <dd class="checkbox">
+              <input type="checkbox" name="chkRemember" id="chkRemember" tabindex="98" />
+              <label for="chkRemember">保持登录</label>
+            </dd>
+            <dd class="submit">
+              <input id="btnPost" name="btnPost" type="button" value="登录" class="button" tabindex="99" />
+            </dd>
+          </dl>
+          <input type="hidden" name="username" id="username" value="" />
+          <input type="hidden" name="password" id="password" value="" />
+          <input type="hidden" name="savedate" id="savedate" value="1" />
+        </form>
+      </div>
+    </div>
   </div>
-</div>
-</div>
-<script type="text/javascript">
-$("#btnPost").click(function(){
+  <script type="text/javascript">
+    $("#btnPost").click(function () {
 
-    debugger;
-    var strUserName=$("#edtUserName").val();
-    var strPassWord=$("#edtPassWord").val();
-    var strSaveDate=$("#savedate").val()
+      var strUserName = $("#edtUserName").val();
+      var strPassWord = $("#edtPassWord").val();
+      var strSaveDate = $("#savedate").val()
 
-    if (strUserName=== "" || strPassWord === ""){
-        alert("用户名和密码不能为空");
+      if (strUserName.trim() === "" || strPassWord.trim() === "") {
+        layer.msg("用户名和密码不能为空", { icon: 2, time: 1000 });
         return false;
-    }
+      }
 
-    $("#edtUserName").remove();
-    $("#edtPassWord").remove();
+      $.post("{:url('admin/user/checkLogin')}", {
+        mem_Name: strUserName,
+        mem_Password: MD5(strPassWord),
+      }, function (data) {
+        if(data.status === 0){
+          layer.msg(data.message,{icon:2,time:1000});
+        }else{
+          layer.msg(data.message,{icon:1,time:1000},function(){
+            window.location.replace("{:url('admin/index/index')}");
+          })
+        }
+      })
+    })
 
-    $("form").attr("action","cmd.php?act=verify");
-    $("#username").val(strUserName);
-    $("#password").val(MD5(strPassWord));
-    $("#savedate").val(strSaveDate);
-})
+// $("#chkRemember").click(function(){
+//     $("#savedate").attr("value", $("#chkRemember").attr("checked") == "checked" ? 30 : 1);
+// })
 
-$("#chkRemember").click(function(){
-    $("#savedate").attr("value", $("#chkRemember").attr("checked") == "checked" ? 30 : 1);
-})
-
-</script>
+  </script>
 </body>
+
 </html>
 <!--32.00 ms , 4 query , 1029kb memory , 0 error-->
