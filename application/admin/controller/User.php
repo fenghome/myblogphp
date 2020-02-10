@@ -4,6 +4,7 @@ namespace app\admin\controller;
 use app\admin\controller\Base;
 use app\admin\model\Member;
 use think\Request;
+use think\facade\Session;
 
 
 class User extends Base
@@ -17,6 +18,7 @@ class User extends Base
             $status = 0;
             $message = "用户名或密码错误";
         }else{
+            Session::set('user_info',$user_info->getData());
             $status = 1;
             $message = "登录成功";
         }
@@ -26,6 +28,8 @@ class User extends Base
 
     //显示用户管理页面
     public function showUsers(){
+        $users = Member::all();
+        $this->assign('users',$users);
         return $this->fetch('user/admin-list');
     }
 }
