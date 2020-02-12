@@ -37,4 +37,19 @@ class User extends Base
     public function showUserAdd(){
         return $this->fetch('user/admin-add');
     }
+
+    //添加用户
+    public function addUser(Request $request){
+        $data = $request->param();
+        $res = Member::create($data,true);
+        if($res){
+            $status = 1;
+            $message = "用户新增成功";
+        }else{
+            $status = 0;
+            $message = "用户新增失败";
+        }
+
+        return ['status'=>$status,'message'=>$message];
+    }
 }
