@@ -32,4 +32,9 @@ class User extends Base
         $this->assign('users',$users);
         return $this->fetch('user/admin-list');
     }
+
+    //显示增加用户页面
+    public function showUserAdd(){
+        return $this->fetch('user/admin-add');
+    }
 }
