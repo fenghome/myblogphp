@@ -41,6 +41,7 @@ class User extends Base
     //添加用户
     public function addUser(Request $request){
         $data = $request->param();
+        $data['mem_Password'] = md5($data['mem_Password']);
         $res = Member::create($data,true);
         if($res){
             $status = 1;
@@ -66,17 +67,23 @@ class User extends Base
         $data = $request->param();
         //查找用户名是否存在
         $res = Member::where([
-            ['eme_Name','=',$data['eme_Name']],
+            ['mem_Name','=',$data['mem_Name']],
             ['mem_ID','<>',$data['mem_ID']]
         ])->find();
+        
         if($res){
             $status = 0;
             $message = "用户名已存在";
             return ['status'=>$status,'message'=>$message];
-        }    
+        }  
 
-        //更新用户信息
-        $res = Member::where(['mem_ID'=>$data['mem_ID']])->allowField(true)->update($data);
+        $user = Member::get(['mem_ID'=>$data['mem_ID']]);
+        if($data['mem_Password'] === ""){
+            $data['mem_Password'] = $user->mem_Password;
+        }else{
+            $data['mem_Password'] = md5($data['mem_Password']);
+        }
+        $res = $user->allowField(true)->save($data);
         if(!$res){
             $status = 0;
             $message = "更新失败";
