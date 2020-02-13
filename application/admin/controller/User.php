@@ -94,4 +94,48 @@ class User extends Base
         $message = "更新成功";
         return ['status'=>$status,'message'=>$message];       
     }
+
+    //停用用户
+    public function stopUser(Request $request){
+        $id = $request->param('id');
+        $res = Member::get(['mem_ID'=>$id])->save(['mem_Status'=>0]);
+        if(!$res){
+            $status = 0;
+            $message = "停用失败";
+            return ['status'=>$status,'message'=>$message];   
+        }
+
+        $status = 1;
+        $message = "停用成功";
+        return ['status'=>$status,'message'=>$message]; 
+    }
+
+    //启用用户
+    public function startUser(Request $request){
+        $id = $request->param('id');
+        $res = Member::get(['mem_ID'=>$id])->save(['mem_Status'=>1]);
+        if(!$res){
+            $status = 0;
+            $message = "启用失败";
+            return ['status'=>$status,'message'=>$message];   
+        }
+
+        $status = 1;
+        $message = "启用成功";
+        return ['status'=>$status,'message'=>$message]; 
+    }
+
+    //删除用户
+    public function deleteUser(Request $request){
+        $id = $request->param('id');
+        $res = Member::where('mem_ID','=',$id)->delete();
+        if(!$res){
+            $status = 0;
+            $message = "删除失败";
+            return ['status'=>$status,'message'=>$message];   
+        }
+        $status =1;
+        $message = "删除成功";
+        return ['status'=>$status,'message'=>$message];
+    }
 }
