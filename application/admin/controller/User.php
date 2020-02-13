@@ -52,4 +52,39 @@ class User extends Base
 
         return ['status'=>$status,'message'=>$message];
     }
+
+    //显示编辑用户页面
+    public function showUserEdit(Request $request){
+        $id = $request->param('id');
+        $user = Member::get(['mem_ID'=>$id]);
+        $this->assign('user',$user);
+        return $this->fetch('user/admin-edit');
+    }
+
+    //更新用户
+    public function editUser(Request $request){
+        $data = $request->param();
+        //查找用户名是否存在
+        $res = Member::where([
+            ['eme_Name','=',$data['eme_Name']],
+            ['mem_ID','<>',$data['mem_ID']]
+        ])->find();
+        if($res){
+            $status = 0;
+            $message = "用户名已存在";
+            return ['status'=>$status,'message'=>$message];
+        }    
+
+        //更新用户信息
+        $res = Member::where(['mem_ID'=>$data['mem_ID']])->allowField(true)->update($data);
+        if(!$res){
+            $status = 0;
+            $message = "更新失败";
+            return ['status'=>$status,'message'=>$message];
+        }
+
+        $status = 1;
+        $message = "更新成功";
+        return ['status'=>$status,'message'=>$message];       
+    }
 }
