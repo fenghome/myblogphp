@@ -117,7 +117,7 @@ $(function(){
 		increaseArea: '20%'
 	});
 	
-	$.validator.addMethod('hasSpace',function(value,element,params){
+	$.validator.addMethod('noSpace',function(value,element,params){
 		var checkCode = /\s/;
 		return !checkCode.test(value);
 	},"不能有空格")
@@ -126,11 +126,11 @@ $(function(){
 		rules:{
 			mem_Name:{
 				required:true,
-				hasSpace:true,
+				noSpace:true,
 			},
 			mem_Password:{
 				required:true,
-				hasSpace:true,
+				noSpace:true,
 			},
 			mem_Password2:{
 				required:true,

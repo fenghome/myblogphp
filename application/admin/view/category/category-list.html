@@ -11,7 +11,7 @@
 		<article class="cl pd-20">
 			<div class="cl pd-5 bg-1 bk-gray mt-20">
 				<span class="l">
-					<a href="javascript:;" onclick="category_add('添加用户','{:url("category/showCategoryAdd")}','800','600')"
+					<a href="javascript:;" onclick="category_add('添加用户','{:url("category/showCategoryAdd")}','800','500')"
 						class="btn btn-primary radius">
 						<i class="Hui-iconfont">&#xe600;</i> 添加分类
 					</a>
@@ -41,7 +41,7 @@
 						<td>{$category.cate_Alias}</td>
 						<td>{$category.cate_Count}</td>
 						<td class="td-manage">
-							<a title="编辑" href="javascript:;" onclick="category_edit('用户编辑','{:url("category/showCategoryEdit",["id"=>$category.cate_ID])}','800','600')" class="ml-5" style="text-decoration:none">
+							<a title="编辑" href="javascript:;" onclick="category_edit('用户编辑','{:url("category/showCategoryEdit",["id"=>$category.cate_ID])}','800','500')" class="ml-5" style="text-decoration:none">
 								<i class="Hui-iconfont">&#xe6df;</i>
 							</a>
 							<a title="删除" href="javascript:;" onclick="category_del(this,{$category.cate_ID})" class="ml-5" style="text-decoration:none">

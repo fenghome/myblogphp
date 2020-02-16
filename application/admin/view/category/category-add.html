@@ -30,61 +30,43 @@
 </head>
 <body>
 <article class="cl pd-20">
-	<form action="" method="post" class="form form-horizontal" id="form-admin-add">
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">用户级别：</label>
-			<div class="formControls col-xs-8 col-sm-9"> 
-				<span class="select-box" style="width:150px;">
-				<select class="select" name="mem_Level" size="1">
-					<option value="1">管理员</option>
-					<option value="2">网站编辑</option>
-					<option value="3">作者</option>
-					<option value="4">协作者</option>
-					<option value="5">评论者</option>
-					<option value="6">游客</option>
-				</select>
-				</span> </div>
-		</div>
+	<form action="" method="post" class="form form-horizontal" id="form-category-add">
+
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="mem_Name" name="mem_Name">
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>密码：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="password" class="input-text" autocomplete="off" value="" placeholder="密码" id="mem_Password" name="mem_Password">
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="password" class="input-text" autocomplete="off"  placeholder="确认新密码" id="mem_Password2" name="mem_Password2">
+				<input type="text" class="input-text" value="" placeholder="" id="cate_Name" name="cate_Name">
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">别名：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="mem_Alias" name="mem_Alias">
+				<input type="text" class="input-text" value="" placeholder="" id="cate_Alias" name="cate_Alias">
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">邮箱：</label>
+			<label class="form-label col-xs-4 col-sm-3">排序：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" placeholder="@" name="mem_Email" id="mem_Email">
+				<input type="text" class="input-text" value="0" name="cate_Order" id="cate_Order">
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">主页：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" placeholder="" name="mem_HomePage" id="mem_HomePage">
+			<label class="form-label col-xs-4 col-sm-3">父分类：</label>
+			<div class="formControls col-xs-8 col-sm-9"> 
+				<span class="select-box" style="width:150px;">
+				<select class="select" name="cate_Pid" size="1">
+					<option value="0">无</option>
+					{volist name="categories" id="category"}
+					<option value="{$category.cate_ID}">{$category.cate_Name}</option>
+					{/volist}
+				</select>
+				</span> 
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">摘要：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<textarea name="mem_intro" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="textarealength(this,100)"></textarea>
+				<textarea name="cate_intro" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="textarealength(this,100)"></textarea>
 				<p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
 			</div>
 		</div>
@@ -117,37 +99,26 @@ $(function(){
 		increaseArea: '20%'
 	});
 	
-	$.validator.addMethod('hasSpace',function(value,element,params){
+	$.validator.addMethod('noSpace',function(value,element,params){
 		var checkCode = /\s/;
-		return !checkCode.test(value);
+		return this.optional(element)||!checkCode.test(value);
 	},"不能有空格")
 
-	$("#form-admin-add").validate({
+	$("#form-category-add").validate({
 		rules:{
-			mem_Name:{
+			cate_Name:{
 				required:true,
-				hasSpace:true,
+				noSpace:true,
 			},
-			mem_Password:{
-				required:true,
-				hasSpace:true,
+			cate_Alias:{
+				noSpace:true,
 			},
-			mem_Password2:{
-				required:true,
-				equalTo: "#mem_Password"
-			},
-			mem_Email:{
-				email:true,
-			},
-			mem_HomePage:{
-				url:true
-			}
 		},
 		onkeyup:true,
 		focusCleanup:false,
 		success:"valid",
 		submitHandler:function(form){
-			$.post("{:url('user/addUser')}",$("#form-admin-add").serialize(),function(data){
+			$.post("{:url('category/addCategory')}",$("#form-category-add").serialize(),function(data){
 				if(data.status === 1){
 					layer.msg(data.message,{icon:1,time:1000},function(){
 						var index = parent.layer.getFrameIndex(window.name);
