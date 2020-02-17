@@ -94,15 +94,19 @@ class Category extends Base{
     //path构成:序号,自ID|
     //修改自己的Path
     $oldCate = CModel::get(['cate_ID'=>$data['cate_ID']]);
-    $oldPathArr = explode('|',$oldCate->cate_Path);
-    //$pathSlice:Path的表述自己信息的部分
-    $pathSlice = $oldPathArr[$oldCate->cate_Level-1];
-    $pathSliceArr = explode(',',$pathSlice);
-    $pathSliceArr[0] = $data['cate_Order'];
-    $newPathSlice = implode(',',$pathSliceArr);
-    $oldPathArr[$oldCate->cate_Level-1] = $newPathSlice;
-    $newPath = implode('|',$oldPathArr);
-    return $newPath;
+    $oldPath = $oldCate->cate_Path;
+    $oldLevel = $oldCate->cate_Level;
+    $oldPathSlice = substr($oldPath,$oldLevel*4-4,4);
+    $newPathSlice = replaceIndex($data['cate_Order'],$oldPath,0);
+
+    $cates = CModel::where('cate_Path','like','%'.$oldPathSlice.'%')->select();
+
+    foreach($cates as $cate){
+      $newPath = str_replace($oldPathSlice,$newPathSlice,$cate->cate_Path);
+      CModel::where('cate_Id','=',$cate->cate_ID)->update(['cate_Path'=>$newPath]);
+    }
+    
+    return $cates->toArray();
 
     // if($data['cate_Pid']== 0){      
     //   $oldPathArr[0] = $data['cate_Order'].$data['cate_ID'].'|';

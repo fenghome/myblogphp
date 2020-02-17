@@ -10,6 +10,8 @@ class Index extends Base{
     }
 
     public function test(){
-        ppp();
+        $str = "0,1|2,4|" ;
+        print_r(replaceIndex('6',$str,6));
+        
     }
 }
