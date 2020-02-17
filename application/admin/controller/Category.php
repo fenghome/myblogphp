@@ -93,35 +93,38 @@ class Category extends Base{
 
     //path构成:序号,自ID|
     //修改自己的Path
-    $oldPath = CModal::get(['cate_ID'=>$data['cate_ID']])->cate_Path;
-    $oldPathArr = explode('|',$oldPath);
-    //Path的表述自己信息的部分
-    $pathSlice = $oldPathArr[$oldPath['cate_Level']];
+    $oldCate = CModel::get(['cate_ID'=>$data['cate_ID']]);
+    $oldPathArr = explode('|',$oldCate->cate_Path);
+    //$pathSlice:Path的表述自己信息的部分
+    $pathSlice = $oldPathArr[$oldCate->cate_Level-1];
     $pathSliceArr = explode(',',$pathSlice);
-    $pathSliceArr[0] = data['cate_Order'];
+    $pathSliceArr[0] = $data['cate_Order'];
+    $newPathSlice = implode(',',$pathSliceArr);
+    $oldPathArr[$oldCate->cate_Level-1] = $newPathSlice;
+    $newPath = implode('|',$oldPathArr);
+    return $newPath;
 
-
-    if($data['cate_Pid']== 0){      
-      $oldPathArr[0] = $data['cate_Order'].$data['cate_ID'].'|';
-      $data['cate_Path'] = implode('',$oldPathArr); 
-    }else{
-      $res1 = CModal::all(['cate_Pid'=>$data['cate_']])
-    }
+    // if($data['cate_Pid']== 0){      
+    //   $oldPathArr[0] = $data['cate_Order'].$data['cate_ID'].'|';
+    //   $data['cate_Path'] = implode('',$oldPathArr); 
+    // }else{
+    //   $res1 = CModal::all(['cate_Pid'=>$data['cate_']])
+    // }
 
     
-    $res1 = CModel::get(['cate_ID'=>$data['cate_ID']])
-            ->allowField(true)
-            ->save($data);
+    // $res1 = CModel::get(['cate_ID'=>$data['cate_ID']])
+    //         ->allowField(true)
+    //         ->save($data);
     
-    if(!$res1){
-      $status = 
+    // if(!$res1){
+    //   $status = 
 
-      $message = "编辑分类失败";
-      return ['status'=>$status,'message'=>$message];
-    }
+    //   $message = "编辑分类失败";
+    //   return ['status'=>$status,'message'=>$message];
+    // }
 
-    $status = 1;
-    $message = "编辑分类成功";
-    return ['status'=>$status,'message'=>$message];
+    // $status = 1;
+    // $message = "编辑分类成功";
+    // return ['status'=>$status,'message'=>$message];
   }
 }
