@@ -10,8 +10,8 @@ class Index extends Base{
     }
 
     public function test(){
-        $str = "0,1|2,4|" ;
-        print_r(replaceIndex('6',$str,6));
+        $str = "0,1|" ;
+        print_r(count(explode('|',$str)));
         
     }
 }

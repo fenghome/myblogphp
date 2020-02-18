@@ -67,7 +67,8 @@ class Category extends Base{
   //显示编辑分类页面
   public function showCategoryEdit(Request $request){
     $id = $request->param('id');
-    $categories = CModel::where('cate_ID','>','0')->order(['cate_Path','cate_Order'])->select();
+    $path = CModel::get(['cate_ID'=>$id])->cate_Path;
+    $categories = CModel::where('cate_Path','not like',$path.'%')->order(['cate_Path','cate_Order'])->select();
     foreach($categories as $cate){
       $cate->cate_Name = str_repeat('|-------',($cate->cate_Level-1)).$cate->cate_Name;
     }
@@ -91,44 +92,54 @@ class Category extends Base{
       return ['status'=>$status,'message'=>$message];
     }
 
-    //path构成:序号,自ID|
-    //修改自己的Path
     $oldCate = CModel::get(['cate_ID'=>$data['cate_ID']]);
+    $oldPid = $oldCate->cate_Pid;
     $oldPath = $oldCate->cate_Path;
     $oldLevel = $oldCate->cate_Level;
-    $oldPathSlice = substr($oldPath,$oldLevel*4-4,4);
-    $newPathSlice = replaceIndex($data['cate_Order'],$oldPath,0);
+    $fatherPath = "";
+    if($data['cate_Pid'] != 0){
+      $fatherPath = CModel::get(['cate_ID'=>$data['cate_Pid']])->cate_Path;
+    }
+    $newPath = $fatherPath.$data['cate_Order'].','.$data['cate_ID'].'|';
 
-    $cates = CModel::where('cate_Path','like','%'.$oldPathSlice.'%')->select();
-
-    foreach($cates as $cate){
-      $newPath = str_replace($oldPathSlice,$newPathSlice,$cate->cate_Path);
-      CModel::where('cate_Id','=',$cate->cate_ID)->update(['cate_Path'=>$newPath]);
+    $res = CModel::where('cate_Path','like',$oldPath.'%')->select();
+   
+    foreach($res as $cate){
+      $tempPath = str_replace($oldPath,$newPath,$cate->cate_Path);
+      $tempLevel = count(explode('|',$tempPath))-1;
+      CModel::where(['cate_ID'=>$cate->cate_ID])->update(['cate_Path'=>$tempPath,'cate_Level'=>$tempLevel]);
     }
     
-    return $cates->toArray();
+    // //根据cate_Pid变化，更新cate_Path
+    // if($oldPid != $data['cate_Pid']){
 
-    // if($data['cate_Pid']== 0){      
-    //   $oldPathArr[0] = $data['cate_Order'].$data['cate_ID'].'|';
-    //   $data['cate_Path'] = implode('',$oldPathArr); 
-    // }else{
-    //   $res1 = CModal::all(['cate_Pid'=>$data['cate_']])
+    // }
+    // $newPath = 
+    // // path构成:序号,自ID| 
+
+    // $oldPathSlice = substr($oldPath,$oldLevel*4-4,4);
+    // $newPathSlice = replaceIndex($data['cate_Order'],$oldPath,0);
+
+    // $cates = CModel::where('cate_Path','like','%'.$oldPathSlice.'%')->select();
+
+    // foreach($cates as $cate){
+    //   $newPath = str_replace($oldPathSlice,$newPathSlice,$cate->cate_Path);
+    //   CModel::where('cate_Id','=',$cate->cate_ID)->update(['cate_Path'=>$newPath]);
     // }
 
+    // //计算新的cate_Level;
+    // $data['cate_Level'] = 
     
-    // $res1 = CModel::get(['cate_ID'=>$data['cate_ID']])
-    //         ->allowField(true)
-    //         ->save($data);
-    
-    // if(!$res1){
-    //   $status = 
-
-    //   $message = "编辑分类失败";
+    // $res1 = CModel::where('cate_ID','=',$data['cate_ID'])->update($data);
+    // if($res1<=0){
+    //   $status = 0;
+    //   $message = "更新失败";
     //   return ['status'=>$status,'message'=>$message];
     // }
 
     // $status = 1;
-    // $message = "编辑分类成功";
+    // $message = "更新成功";
     // return ['status'=>$status,'message'=>$message];
+
   }
 }
