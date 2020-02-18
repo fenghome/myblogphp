@@ -109,37 +109,18 @@ class Category extends Base{
       $tempLevel = count(explode('|',$tempPath))-1;
       CModel::where(['cate_ID'=>$cate->cate_ID])->update(['cate_Path'=>$tempPath,'cate_Level'=>$tempLevel]);
     }
+
+    $res1 = CModel::where(['cate_ID'=>$cate->cate_ID])->update($data);
     
-    // //根据cate_Pid变化，更新cate_Path
-    // if($oldPid != $data['cate_Pid']){
+    if($res1<=0){
+      $status = 0;
+      $message = "更新失败";
+      return ['status'=>$status,'message'=>$message];
+    }
 
-    // }
-    // $newPath = 
-    // // path构成:序号,自ID| 
-
-    // $oldPathSlice = substr($oldPath,$oldLevel*4-4,4);
-    // $newPathSlice = replaceIndex($data['cate_Order'],$oldPath,0);
-
-    // $cates = CModel::where('cate_Path','like','%'.$oldPathSlice.'%')->select();
-
-    // foreach($cates as $cate){
-    //   $newPath = str_replace($oldPathSlice,$newPathSlice,$cate->cate_Path);
-    //   CModel::where('cate_Id','=',$cate->cate_ID)->update(['cate_Path'=>$newPath]);
-    // }
-
-    // //计算新的cate_Level;
-    // $data['cate_Level'] = 
-    
-    // $res1 = CModel::where('cate_ID','=',$data['cate_ID'])->update($data);
-    // if($res1<=0){
-    //   $status = 0;
-    //   $message = "更新失败";
-    //   return ['status'=>$status,'message'=>$message];
-    // }
-
-    // $status = 1;
-    // $message = "更新成功";
-    // return ['status'=>$status,'message'=>$message];
+    $status = 1;
+    $message = "更新成功";
+    return ['status'=>$status,'message'=>$message];
 
   }
 }
