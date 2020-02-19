@@ -92,10 +92,9 @@ class Category extends Base{
       return ['status'=>$status,'message'=>$message];
     }
 
+    //更新该分类的所有子分类的path和level
     $oldCate = CModel::get(['cate_ID'=>$data['cate_ID']]);
-    $oldPid = $oldCate->cate_Pid;
     $oldPath = $oldCate->cate_Path;
-    $oldLevel = $oldCate->cate_Level;
     $fatherPath = "";
     if($data['cate_Pid'] != 0){
       $fatherPath = CModel::get(['cate_ID'=>$data['cate_Pid']])->cate_Path;
@@ -109,8 +108,8 @@ class Category extends Base{
       $tempLevel = count(explode('|',$tempPath))-1;
       CModel::where(['cate_ID'=>$cate->cate_ID])->update(['cate_Path'=>$tempPath,'cate_Level'=>$tempLevel]);
     }
-
-    $res1 = CModel::where(['cate_ID'=>$cate->cate_ID])->update($data);
+    //更新该分类信息
+    $res1 = CModel::where(['cate_ID'=>$data['cate_ID']])->update($data);
     
     if($res1<=0){
       $status = 0;
@@ -121,6 +120,35 @@ class Category extends Base{
     $status = 1;
     $message = "更新成功";
     return ['status'=>$status,'message'=>$message];
+  }
 
+  //删除分类
+  public function deleteCategory(Request $request){
+    $id = $request->param('id');
+
+    $findChildCate = CModel::get(['cate_Pid'=>$id]);
+    if($findChildCate){
+      $status = 0;
+      $message = "存在子分类，不能删除";
+      return ['status'=>$status,'message'=>$message];
+    }
+
+    $cate = CModel::get(['cate_ID'=>$id]);
+    if($cate->cate_Count>0){
+      $status = 0;
+      $message = "该分类下有文章，不能删除";
+      return ['status'=>$status,'message'=>$message];
+    }
+
+    $res = $cate->delete();
+    if(!$res){
+      $status = 0;
+      $message = "删除失败";
+      return ['status'=>$status,'message'=>$message];
+    }
+
+    $status = 1;
+    $message = "删除成功";
+    return ['status'=>$status,'message'=>$message];
   }
 }
