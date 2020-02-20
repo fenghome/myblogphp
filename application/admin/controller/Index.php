@@ -10,8 +10,8 @@ class Index extends Base{
     }
 
     public function test(){
-        $str = "0,1|" ;
-        print_r(count(explode('|',$str)));
-        
+        $res = Member::create(['mem_Name'=>'sdfsdf','mem_Password'=>'zzzz']);
+        $aa = Member::where(['mem_ID'=>$res->id])->delete();
+        return $aa;
     }
 }
