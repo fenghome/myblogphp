@@ -8,6 +8,7 @@ use think\Request;
 
 class Article extends Base{
   public function showArticles(){
+    $articles = Post::all();
     return $this->fetch('article/article-list');
   }
 
@@ -24,6 +25,14 @@ class Article extends Base{
 
   public function addArticle(Request $request){
     $data = $request->param();
+
+    if(array_key_exists('log_IsLock',$data) && $data['log_IsLock']=='on'){
+      $data['log_IsLock'] = 1;
+    }else{
+      $data['log_IsLock'] = 0;
+    }
+    $data['log_PostTime'] = strtotime($data['log_PostTime']);
+
     $article = Post::create($data,true);
     if(!$article){
       $status = 0;
@@ -40,9 +49,7 @@ class Article extends Base{
     }
     $status = 1;
     $message = "新增文章成功";
-    
- 
-
+    return ['status'=>$status,'message'=>$message];
   }
 
 
