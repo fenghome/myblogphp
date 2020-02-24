@@ -9,6 +9,7 @@ use think\Request;
 class Article extends Base{
   public function showArticles(){
     $articles = Post::all();
+    $this->assign('articles',$articles);
     return $this->fetch('article/article-list');
   }
 
@@ -18,8 +19,8 @@ class Article extends Base{
       $cate->cate_Name = str_repeat('|-------',($cate->cate_Level-1)).$cate->cate_Name;
     }
     $this->assign('cates',$cates);
-    $auths = Member::all();
-    $this->assign('auths',$auths);
+    $authors = Member::all();
+    $this->assign('authors',$authors);
     return $this->fetch('article/article-add');
   }
 
