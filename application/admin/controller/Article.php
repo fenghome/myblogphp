@@ -3,12 +3,12 @@ namespace app\admin\controller;
 use app\admin\controller\Base;
 use app\admin\model\Category;
 use app\admin\model\Member;
-use app\admin\model\Post;
+use app\admin\model\Article as AModel;
 use think\Request;
 
 class Article extends Base{
   public function showArticles(){
-    $articles = Post::all();
+    $articles = AModel::all();
     $this->assign('articles',$articles);
     return $this->fetch('article/article-list');
   }
@@ -32,9 +32,8 @@ class Article extends Base{
     }else{
       $data['log_IsLock'] = 0;
     }
-    $data['log_PostTime'] = strtotime($data['log_PostTime']);
 
-    $article = Post::create($data,true);
+    $article = AModel::create($data,true);
     if(!$article){
       $status = 0;
       $message = "新增文章失败";
@@ -43,7 +42,7 @@ class Article extends Base{
 
     $res = Category::where(['cate_ID'=>$data['log_CateID']])->inc('cate_Count')->update();
     if($res<=0){
-      Post::where(['log_ID'=>$article->id])->delete();
+      AModel::where(['log_ID'=>$article->id])->delete();
       $status = 0;
       $message = "新增文章失败";
       return ['status'=>$status,'message'=>$message];
@@ -52,6 +51,4 @@ class Article extends Base{
     $message = "新增文章成功";
     return ['status'=>$status,'message'=>$message];
   }
-
-
 }
