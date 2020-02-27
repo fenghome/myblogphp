@@ -51,4 +51,21 @@ class Article extends Base{
     $message = "新增文章成功";
     return ['status'=>$status,'message'=>$message];
   }
+
+  public function showArticleEdit(Request $request){
+    $id = $request->param('id');
+    $article = AModel::get(['log_ID'=>$id]);
+    $this->assign('article',$article);
+
+    $cates = Category::where('cate_ID','>','0')->order('cate_Path')->select();
+    foreach($cates as $cate){
+      $cate->cate_Name = str_repeat('|-------',($cate->cate_Level-1)).$cate->cate_Name;
+    }
+    $this->assign('cates',$cates);
+
+    $authors = Member::all();
+    $this->assign('authors',$authors);
+
+    return $this->fetch('article/article-edit');
+  }
 }
