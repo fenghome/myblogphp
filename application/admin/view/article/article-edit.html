@@ -152,10 +152,9 @@ $(function(){
 	var ue = UE.getEditor('editor');
 	
 	ue.ready(function(){
-		ue.setContent('{$article.log_Content}');
+		str = $("<div/>").html('{$article.log_Content}').text();
+		ue.setContent(str);
 	});
-
-
 
 	$.validator.addMethod('noSpace',function(value,element,params){
 		var checkCode = /\s/;
