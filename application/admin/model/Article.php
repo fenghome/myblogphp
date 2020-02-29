@@ -7,7 +7,8 @@ class Article extends Model{
 
   protected $type = [
     'log_PostTime'  =>  'timestamp',
-];
+  ];
+
 
   public function getLogStatusAttr($value)
   {

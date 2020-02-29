@@ -68,4 +68,35 @@ class Article extends Base{
 
     return $this->fetch('article/article-edit');
   }
+
+  public function editArticle(Request $request){
+    $data = $request->param();
+
+    if(array_key_exists('log_IsLock',$data) && $data['log_IsLock']=='on'){
+      $data['log_IsLock'] = 1;
+    }else{
+      $data['log_IsLock'] = 0;
+    }
+
+    $data['log_PostTime'] = strtotime($data['log_PostTime']);
+
+    $article = AModel::get(['log_ID'=>$data['log_ID']]);
+    
+    if($article->log_CateID != $data['log_CateID']){
+      Category::where('cate_ID','=',$article->log_CateID)->dec('cate_Count')->update();
+      Category::where(['cate_ID'=>$data['log_CateID']])->inc('cate_Count')->update();
+    }
+
+    $res = AModel::where(['log_ID'=>$data['log_ID']])->update($data);
+    if(!$res){
+      $status = 0;
+      $message = "更新文章失败";
+      return ['status'=>$status,'message'=>$message];
+    }
+
+    $status = 1;
+    $message = "更新文章成功";
+    return ['status'=>$status,'message'=>$message];
+
+  }
 }
