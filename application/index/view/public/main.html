@@ -1,0 +1,33 @@
+<div id="divMain">
+
+  {volist name="articles" id="article"}
+  <div class="post multi">
+    <h4 class="post-date">{$article.log_PostTime}</h4>
+    <h2 class="post-title"><a href="http://zblog.io/?id=6">{$article.log_Title}</a></h2>
+    <div class="post-body">
+      {:html_entity_decode($article.log_Content)}
+      <!--autointro-->
+    </div>
+    <h5 class="post-tags"></h5>
+    <h6 class="post-footer">
+      作者:{$article.author.mem_Name} | 分类:{$article.category.cate_Name} | 浏览:{$article.log_ViewNums} | 评论:{$article.log_CommNums}</h6>
+  </div>
+  {/volist}
+
+
+  <div class="post multi">
+    <h4 class="post-date">2020-02-06 10:53:27</h4>
+    <h2 class="post-title"><a href="http://zblog.io/?id=1">欢迎使用Z-BlogPHP！</a></h2>
+    <div class="post-body">
+      <p>欢迎使用Z-Blog，这是程序自动生成的文章，您可以删除或是编辑它:)</p>
+      <p>系统生成了一个留言本和一篇《欢迎使用Z-BlogPHP！》，祝您使用愉快！</p>
+    </div>
+    <h5 class="post-tags"></h5>
+    <h6 class="post-footer">
+      作者:admin | 分类:分类1 | 浏览:2 | 评论:0 </h6>
+  </div>
+  <div class="pagebar"> <a href="http://zblog.io/"><span class="page">‹‹</span></a>
+    <span class="page now-page">1</span>
+    <a href="http://zblog.io/"><span class="page">››</span></a>
+  </div>
+</div>

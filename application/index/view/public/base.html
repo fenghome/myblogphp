@@ -1,0 +1,30 @@
+{include file="public/head" /}
+
+<body class="multi index">
+	<div id="divAll">
+		<div id="divPage">
+			<div id="divMiddle">
+        {include file="public/top" /}
+
+        {block name="main"}
+        {include file="public/main" /}
+        {/block}
+
+        {block name="sidebar"}
+        {include file="public/sidebar" /}
+        {/block}
+
+        {include file="public/bottom" /}
+
+				<div class="clear"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<script type="text/javascript" src="__STATIC__/admin/lib/jquery/1.9.1/jquery.min.js"></script> 
+
+</body>
+
+</html>
+<!--49.00 ms , 5 query , 1256kb memory , 0 error-->

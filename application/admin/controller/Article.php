@@ -99,4 +99,28 @@ class Article extends Base{
     return ['status'=>$status,'message'=>$message];
 
   }
+
+  public function deleteArticle(Request $request){
+    $id = $request->param('id');
+    $article = AModel::get(['log_ID'=>$id]);
+
+    $res = Category::where(['cate_ID'=>$article->log_CateID])->dec('cate_Count')->update();
+    if(!$res){
+      Category::where(['cate_ID'=>$article->log_CateID])->inc('cate_Count')->update();
+      $status = 0;
+      $message = "删除文章失败";
+      return ['status'=>$status,'message'=>$message];
+    }
+
+    $res1 = $article->delete();
+    if(!$res1){
+      $status = 0;
+      $message = "删除文章失败";
+      return ['status'=>$status,'message'=>$message];
+    }
+    
+    $status = 1;
+    $message = "删除文章成功";
+    return ['status'=>$status,'message'=>$message];
+  }
 }
