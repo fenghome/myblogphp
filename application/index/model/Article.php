@@ -24,4 +24,5 @@ class Article extends Model{
   public function author(){
     return $this->belongsTo('Member','log_AuthorID','mem_ID');
   }
+
 }

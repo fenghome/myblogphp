@@ -26,27 +26,80 @@
 
 	<!--评论框-->
 	<div class="post" id="divCommentPost">
-		<p class="posttop"><a name="comment">发表评论:</a><a rel="nofollow" id="cancel-reply" href="#divCommentPost"
-				style="display:none;"><small>取消回复</small></a></p>
-		<form id="frmSumbit" target="_self" method="post"
-			action="http://zblog.io/zb_system/cmd.php?act=cmt&amp;postid=1&amp;key=b2552cef020bec9268371400f3aa61df">
-			<input type="hidden" name="inpId" id="inpId" value="1" />
-			<input type="hidden" name="inpRevID" id="inpRevID" value="0" />
-			<p><input type="text" name="inpName" id="inpName" class="text" value="访客" size="28" tabindex="1" /> <label
-					for="inpName">名称(*)</label></p>
-			<p><input type="text" name="inpEmail" id="inpEmail" class="text" value="" size="28" tabindex="2" /> <label
-					for="inpEmail">邮箱</label></p>
-			<p><input type="text" name="inpHomePage" id="inpHomePage" class="text" value="" size="28" tabindex="3" />
-				<label for="inpHomePage">主页</label></p>
-
-			<p><label for="txaArticle">正文(*)</label></p>
-			<p><textarea name="txaArticle" id="txaArticle" class="text" cols="50" rows="4" tabindex="5"></textarea>
+		<p class="posttop">
+			<a name="comment">发表评论:</a>
+			<a rel="nofollow" id="cancel-reply" href="#divCommentPost"style="display:none;">
+				<small>取消回复</small>
+			</a>
+		</p>
+		<form id="frmSumbit" target="_self" method="post">
+			<input type="hidden" name="comm_AuthorID" id="comm_AuthorID" value="-1" />	
+			<p>
+				<input type="text" name="comm_Name" id="comm_Name" class="text" value="访客" size="28" tabindex="1" />
+				<label for="inpName">名称(*)</label>
 			</p>
-			<p><input name="sumbit" type="submit" tabindex="6" value="提交" onclick="return zbp.comment.post()"
-					class="button" /></p>
+			<p>
+				<input type="text" name="comm_Email" id="comm_Email" class="text" value="" size="28" tabindex="2" /> 
+				<label for="inpEmail">邮箱</label>
+			</p>
+			<p>
+				<input type="text" name="comm_HomePage" id="comm_HomePage" class="text" value="" size="28" tabindex="3" />
+				<label for="inpHomePage">主页</label>
+			</p>
+
+			<p>
+				<label for="txaArticle">正文(*)</label>
+			</p>
+			<p>
+				<textarea name="comm_Content" id="comm_Content" class="text" cols="50" rows="4" tabindex="5"></textarea>
+
+			</p>
+			<p>
+				<input id="submit" name="sumbit" type="button" tabindex="6" value="提交" 	class="button" />
+			</p>
 		</form>
 		<p class="postbottom">◎欢迎参与讨论，请在这里发表您的看法、交流您的观点。</p>
 	</div>
 </div>
+{/block}
+
+{block name="js"}
+	<script>
+		$(function(){
+			$('#submit').click(function(){
+				//验证邮箱
+				var emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+				emailDiv = $('#comm_Email');
+				if(emailDiv.val().trim().length>0 && !emailReg.test(emailDiv.val()))
+				{
+					alert('提示\n\n请输入有效的E_mail！');
+					emailDiv.focus();
+					return;
+				}
+
+				//验证主页
+				var pageReg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
+				pageDiv = $('#comm_HomePage');
+				if(pageDiv.val().trim().length>0 && !pageReg.test(pageDiv.val()))
+				{
+					alert('提示\n\n这网址不是以http://https://开头，或者不是网址！');
+					pageDiv.focus();
+					return;
+				}
+				//验证正文
+				contentDiv = $('#comm_Content');
+				contentLength = contentDiv.val().trim().length;
+				if(contentLength==0 || contentLength>=100){
+					alert("提示\n\n评论内容不能为空或过长");
+					contentDiv.focus();
+					return;
+				}
+
+				$.post("{:url('article/addComment')}",$('#frmSumbit').serialize(),function(data){
+
+				});
+			})
+		})
+	</script>
 {/block}
 
