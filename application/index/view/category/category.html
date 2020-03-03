@@ -1,0 +1,20 @@
+{extend name="public/base" /}
+
+{block name="main"}
+<div id="divMain">
+
+	{volist name="articles" id="article"}
+	<div class="post multi">
+		<h4 class="post-date">{$article.log_PostTime}</h4>
+		<h2 class="post-title"><a href="{:url('Article/index',['id'=>$article.log_ID])}">{$article.log_Title}</a></h2>
+		<div class="post-body">
+			{:html_entity_decode($article.log_Content)}
+			<!--autointro-->
+		</div>
+		<h5 class="post-tags"></h5>
+		<h6 class="post-footer">
+			作者:{$article.author.mem_Name} | 分类:{$article.category.cate_Name} | 浏览:{$article.log_ViewNums} | 评论:{$article.log_CommNums}</h6>
+	</div>
+	{/volist}
+</div>
+{/block}

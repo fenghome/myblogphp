@@ -18,7 +18,28 @@
 
 	<label id="AjaxCommentBegin"></label>
 	<!--评论输出-->
-
+	{volist name="comments" id="comment"}
+	<ul class="msg" id="cmt42225">
+		<li class="msgname">
+		<img class="avatar" src="./菠萝阁-应用中心佩奇新春红包_files/111c45ecddbbaaf6f39ffa8693d8010d.jpeg" alt="" width="32">
+		<span class="commentname">
+			{$comment.author.mem_Name}
+		</span>
+		<br>
+		<small>发布于&nbsp;{$comment.comm_PostTime}&nbsp;&nbsp;
+			<span class="revertcomment">
+				<a href="https://blog.zblogcn.com/2019/02/02/105/#comment" onclick="zbp.comment.reply(&#39;42225&#39;)">
+					回复该评论
+				</a>
+			</span>
+		</small>
+		<br>
+		</li>
+		<li class="msgarticle">
+			{$comment.comm_Content}
+		</li>
+	</ul>
+	{/volist}
 	<!--评论翻页条输出-->
 	<div class="pagebar commentpagebar">
 	</div>

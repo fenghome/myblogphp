@@ -10,10 +10,16 @@ use think\Request;
 class Article extends Controller{
   public function index(Request $request){
     $id = $request->param('id');
+
     $article = AModel::get(['log_ID'=>$id]);
     $this->assign('article',$article);
+
     $categories = Category::all();
     $this->assign('categories',$categories);
+
+    $comments = Comment::where('comm_LogID','=',$article->log_ID)->select();
+    $this->assign('comments',$comments);
+
     return $this->fetch('article/article');
   }
 

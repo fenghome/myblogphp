@@ -88,7 +88,7 @@
     <dd class="function_c">
       <ul>
         {volist name="categories" id="category"}
-        <li><a href="http://zblog.io/?cate=1">{$category.cate_Name}</a></li>
+        <li><a href="{:url('Category/index',['cate_ID'=>$category.cate_ID])}">{$category.cate_Name}</a></li>
         {/volist}
       </ul>
 
