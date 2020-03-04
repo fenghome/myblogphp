@@ -10,6 +10,6 @@ class Member extends Model{
   }
 
   public function article(){
-    return $this->hasMany('Post','mem_ID');
+    return $this->hasMany('Article','mem_ID');
   }
 }
