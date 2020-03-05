@@ -10,6 +10,10 @@ class Member extends Model{
   }
 
   public function article(){
-    return $this->hasMany('Article','mem_ID');
+    return $this->hasMany('Article','log_AuthoID','mem_ID');
+  }
+
+  public function comment(){
+    return $this->hasMany('Comment','comm_AuthorID','mem_ID');
   }
 }

@@ -25,12 +25,37 @@ class Article extends Controller{
 
   public function addComment(Request $request){
     $data = $request->param();
-    $res = Comment::create($data,true);
-    if(!$res){
+    $data['comm_PostTime'] = strtotime('now');
+    $data['comm_IP'] = $_SERVER['REMOTE_ADDR'];
+
+    $comment = Comment::create($data,true);
+    if(!$comment){
       $status = 0;
       $message = "发表评论失败";
       return ['status'=>$status,'message'=>$message];
     }
+    
+    if(array_key_exists('comm_ParentID',$data)){
+      $fComment = Comment::get(['comm_ID'=>$data['comm_ParentID']]);
+      $comm_Path = $fComment->comm_Path . ',' .  $comment->comm_ID;
+      $comm_Level = $fComment->Level + 1;
+    }else{
+      $comm_Path = $comment->comm_ID;
+      $comm_Level = 0;
+    }
+
+    $res = Comment::where('comm_ID','=',$comment->comm_ID)->update([
+      'comm_Path'  => $comm_Path,
+      'comm_Level' => $comm_Level,
+    ]);
+
+    if(!$res){
+      Comment::where(['comm_ID'=>$comment->comm_ID])->delete();
+      $status = 0;
+      $message = "发表评论失败";
+      return ['status'=>$status,'message'=>$message];
+    }
+
     $status = 1;
     $message = "发表评论成功";
     return ['status'=>$status,'message'=>$message];

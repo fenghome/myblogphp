@@ -4,10 +4,10 @@ use think\Model;
 
 class Comment extends Model{
   public function article(){
-    return $this->hasOne('Article','comm_LogID','comm_ID');
+    return $this->belongsTo('Article','comm_LogID','log_ID');
   }
   public function author(){
-    return $this->hasOne('Member','comm_AuthorID','comm_ID'); 
+    return $this->belongsTo('Member','comm_AuthorID','mem_ID'); 
   }
   
 }

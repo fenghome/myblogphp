@@ -25,4 +25,8 @@ class Article extends Model{
     return $this->belongsTo('Member','log_AuthorID','mem_ID');
   }
 
+  public function commonent(){
+    return $this->hasMany('Comment','comm_LogID','log_ID');
+  }
+
 }

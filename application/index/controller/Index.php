@@ -4,6 +4,10 @@ use think\Controller;
 use app\index\model\Article;
 use app\index\model\Category;
 
+
+use app\index\model\Art;
+use app\index\model\Comm;
+
 class Index extends Controller
 {
     public function index()
@@ -18,5 +22,9 @@ class Index extends Controller
     public function login()
     {
         return $this->fetch('index/login');
+    }
+
+    public function test(){
+        dump($_SERVER['REMOTE_ADDR']) ;
     }
 }
