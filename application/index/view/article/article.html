@@ -1,5 +1,4 @@
 {extend name="public/base" /}
-<!DOCTYPE html>
 
 {block name="main"}
 <div id="divMain">
@@ -11,16 +10,18 @@
 		</div>
 		<h5 class="post-tags"></h5>
 		<h6 class="post-footer">
-			作者:{$article.author.mem_Name} | 分类:{$article.category.cate_Name} | 浏览:{$article.log_ViewNums} | 评论:{$article.log_CommNums} </h6>
+			作者:{$article.author.mem_Name} | 分类:{$article.category.cate_Name} | 浏览:{$article.log_ViewNums} |
+			评论:{$article.log_CommNums} </h6>
 	</div>
 
 
 
 	<label id="AjaxCommentBegin"></label>
-	<!--评论输出-->
-	{volist name="comments" id="comment"}
-	<ul class="msg" id="cmt42225">
-		<li class="msgname">
+	<div class="msgBox">
+<!--评论输出-->
+{volist name="comments" id="comment"}
+<ul class="msg" id="cmt{$comment.comm_ID}" style="margin-left: {$comment.comm_Level*55}px;">
+	<li class="msgname" >
 		<img class="avatar" src="./菠萝阁-应用中心佩奇新春红包_files/111c45ecddbbaaf6f39ffa8693d8010d.jpeg" alt="" width="32">
 		<span class="commentname">
 			{$comment.author.mem_Name}
@@ -28,18 +29,16 @@
 		<br>
 		<small>发布于&nbsp;{$comment.comm_PostTime}&nbsp;&nbsp;
 			<span class="revertcomment">
-				<a href="https://blog.zblogcn.com/2019/02/02/105/#comment" onclick="zbp.comment.reply(&#39;42225&#39;)">
-					回复该评论
-				</a>
-			</span>
-		</small>
-		<br>
-		</li>
-		<li class="msgarticle">
-			{$comment.comm_Content}
-		</li>
-	</ul>
-	{/volist}
+				<a href="#" onclick="openReplyComment('{:url("article/showAddComment",["cid"=>$comment.comm_ID,"aid"=>$comment.comm_LogID])}')"> 回复该评论
+					</a> </span> </small> <br>
+	</li>
+	<li class="msgarticle">
+		{$comment.comm_Content}
+	</li>
+</ul>
+{/volist}
+	</div>
+	
 	<!--评论翻页条输出-->
 	<div class="pagebar commentpagebar">
 	</div>
@@ -47,21 +46,15 @@
 
 	<!--评论框-->
 	<div class="post" id="divCommentPost">
-		<p class="posttop">
-			<a name="comment">发表评论:</a>
-			<a rel="nofollow" id="cancel-reply" href="#divCommentPost"style="display:none;">
-				<small>取消回复</small>
-			</a>
-		</p>
 		<form id="frmSumbit" target="_self" method="post">
-			<input type="hidden" name="comm_AuthorID" id="comm_AuthorID" value="-1" />	
-			<input type="hidden" name="comm_LogID" id="comm_LogID" value="{$article.log_ID}" />	
+			<input type="hidden" name="comm_AuthorID" id="comm_AuthorID" value="-1" />
+			<input type="hidden" name="comm_LogID" id="comm_LogID" value="{$article.log_ID}" />
 			<p>
 				<input type="text" name="comm_Name" id="comm_Name" class="text" value="访客" size="28" tabindex="1" />
 				<label for="inpName">名称(*)</label>
 			</p>
 			<p>
-				<input type="text" name="comm_Email" id="comm_Email" class="text" value="" size="28" tabindex="2" /> 
+				<input type="text" name="comm_Email" id="comm_Email" class="text" value="" size="28" tabindex="2" />
 				<label for="inpEmail">邮箱</label>
 			</p>
 			<p>
@@ -77,7 +70,7 @@
 
 			</p>
 			<p>
-				<input id="submit" name="sumbit" type="button" tabindex="6" value="提交" 	class="button" />
+				<input id="submit" name="sumbit" type="button" tabindex="6" value="提交" class="button" />
 			</p>
 		</form>
 		<p class="postbottom">◎欢迎参与讨论，请在这里发表您的看法、交流您的观点。</p>
@@ -86,42 +79,63 @@
 {/block}
 
 {block name="js"}
-	<script>
-		$(function(){
-			$('#submit').click(function(){
-				//验证邮箱
-				var emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-				emailDiv = $('#comm_Email');
-				if(emailDiv.val().trim().length>0 && !emailReg.test(emailDiv.val()))
-				{
-					alert('提示\n\n请输入有效的E_mail！');
-					emailDiv.focus();
-					return;
-				}
+<script src="__STATIC__/index/js/layer/layer.js"></script>
+<script>
+	function openReplyComment(url) {
+		layer.open({
+			title: false,
+			type: 2,
+			content: url,
+			area: ['600px', '340px']
+		});
+	}
+</script>
+<script>
+	$(function () {
+		$('#submit').click(function () {
+			//验证邮箱
+			var emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+			emailDiv = $('#comm_Email');
+			if (emailDiv.val().trim().length > 0 && !emailReg.test(emailDiv.val())) {
+				alert('提示\n\n请输入有效的E_mail！');
+				emailDiv.focus();
+				return;
+			}
 
-				//验证主页
-				var pageReg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
-				pageDiv = $('#comm_HomePage');
-				if(pageDiv.val().trim().length>0 && !pageReg.test(pageDiv.val()))
-				{
-					alert('提示\n\n这网址不是以http://https://开头，或者不是网址！');
-					pageDiv.focus();
-					return;
-				}
-				//验证正文
-				contentDiv = $('#comm_Content');
-				contentLength = contentDiv.val().trim().length;
-				if(contentLength==0 || contentLength>=100){
-					alert("提示\n\n评论内容不能为空或过长");
-					contentDiv.focus();
-					return;
-				}
+			//验证主页
+			var pageReg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
+			pageDiv = $('#comm_HomePage');
+			if (pageDiv.val().trim().length > 0 && !pageReg.test(pageDiv.val())) {
+				alert('提示\n\n这网址不是以http://https://开头，或者不是网址！');
+				pageDiv.focus();
+				return;
+			}
+			//验证正文
+			contentDiv = $('#comm_Content');
+			contentLength = contentDiv.val().trim().length;
+			if (contentLength == 0 || contentLength >= 100) {
+				alert("提示\n\n评论内容不能为空或过长");
+				contentDiv.focus();
+				return;
+			}
 
-				$.post("{:url('article/addComment')}",$('#frmSumbit').serialize(),function(data){
-
-				});
-			})
+			$.post("{:url('article/addComment')}", $('#frmSumbit').serialize(), function (data) {
+				if (data.status == 1) {
+					layer.msg(data.message, {
+						icon: 1,
+						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+					}, function () {
+						location.reload()
+					});
+				}else{
+					layer.msg(data.message,{
+						icon:2,
+						time:1000
+					})
+				}
+			});
 		})
-	</script>
-{/block}
+	})
 
+</script>
+{/block}

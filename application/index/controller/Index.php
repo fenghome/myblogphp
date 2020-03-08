@@ -3,10 +3,7 @@ namespace app\index\controller;
 use think\Controller;
 use app\index\model\Article;
 use app\index\model\Category;
-
-
-use app\index\model\Art;
-use app\index\model\Comm;
+use app\index\model\Comment;
 
 class Index extends Controller
 {
@@ -25,6 +22,9 @@ class Index extends Controller
     }
 
     public function test(){
-        dump($_SERVER['REMOTE_ADDR']) ;
+        $comms = Comment::where('comm_ID','>','0')->order('comm_Path', 'desc')->select();
+        foreach($comms as $comm){
+            dump($comm->comm_Path);
+        }
     }
 }
