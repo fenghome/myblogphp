@@ -26,6 +26,11 @@ class User extends Base
         return ['status'=>$status,'message'=>$message];
     }
 
+    //用户注销
+    public function logout(Request $request){
+        Session::delete('user_info');
+    }
+
     //显示用户管理页面
     public function showUsers(){
         $users = Member::all();
@@ -138,4 +143,6 @@ class User extends Base
         $message = "删除成功";
         return ['status'=>$status,'message'=>$message];
     }
+
+
 }
