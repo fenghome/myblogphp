@@ -4,6 +4,8 @@ use think\Model;
 
 class Comment extends Model{
 
+  protected $pk = 'comm_ID';
+
   public function getCommPostTimeAttr($value)
   {
       return date('Y-m-d H:i:s',$value);

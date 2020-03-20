@@ -21,8 +21,10 @@ class Comment extends Base{
       $v = ['comm_ID'=>$key,'comm_IsChecking'=>1];
       array_push($updateList,$v);
     }
+  
     $comments = new CommentModel;
     $res = $comments->saveAll($updateList);
+
     if(!$res){
       $status = 0;
       $message = "批量审核失败";
@@ -41,8 +43,9 @@ class Comment extends Base{
       $v = ['comm_ID'=>$key,'comm_IsChecking'=>0];
       array_push($updateList,$v);
     }
+
     $comments = new CommentModel;
-    $res = $comments->saveAll($updateList);
+    $res = $comments->saveAll($updateList,false);
     if(!$res){
       $status = 0;
       $message = "批量审核不通过失败";

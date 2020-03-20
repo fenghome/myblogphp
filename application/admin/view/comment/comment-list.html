@@ -162,11 +162,11 @@
 
 	function agreeComment(){
 		$.post("{:url('comment/agreeComment')}",$('#comment_post').serialize(),function(data){
-			if(data.status == 1){
-				layer.msg(data.message, { icon: 6, time: 1000 });
-				location.reload();
-			}
-			layer.msg(data.message, { icon: 5, time: 1000 });
+			// if(data.status == 1){
+			// 	layer.msg(data.message, { icon: 6, time: 1000 });
+			// 	location.reload();
+			// }
+			// layer.msg(data.message, { icon: 5, time: 1000 });
 		});
 	}
 </script>
