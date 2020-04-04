@@ -4,6 +4,7 @@ use think\Controller;
 use app\index\model\Article;
 use app\index\model\Category;
 use app\index\model\Comment;
+use think\facade\Session;
 
 class Index extends Controller
 {
@@ -18,7 +19,12 @@ class Index extends Controller
 
     public function login()
     {
-        return $this->fetch('index/login');
+        if(Session::has('user_info')){
+            $this->error('用户已登录','admin/index/index');
+        }else{
+            return $this->fetch('index/login');
+        }
+        
     }
 
     public function test(){

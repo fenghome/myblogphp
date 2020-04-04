@@ -1,0 +1,187 @@
+{extend name="public/base" /}
+{block name="content"}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页
+		<span class="c-gray en">&gt;</span>
+		评论管理
+		<span class="c-gray en">&gt;</span>
+		评论管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+			href="javascript:location.replace(location.href);" title="刷新">
+			<i class="Hui-iconfont">&#xe68f;</i>
+		</a> 
+	</nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+		<form id="comment_post">
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+				<span class="l">
+					<a href="javascript:;" onclick="agreeComment()" class="btn btn-danger radius">
+						审核所选项目
+					</a>
+					<a href="javascript:;" onclick="noComment()" class="btn btn-primary radius">
+						不通过所选项目
+					</a>
+
+				</span>
+				<span class="r">共有数据：<strong>{:count($comments)}</strong> 条</span>
+			</div>
+
+			<table class="table table-border table-bordered table-bg">
+				<thead>
+					<tr>
+						<th scope="col" colspan="9">评论列表</th>
+					</tr>
+					<tr class="text-c">
+						<th width="25">
+							<input type="checkbox" name="" id="" >
+						</th>
+						<th width="40">ID</th>
+						<th width="40">上层ID</th>
+						<th width="150">名称</th>
+						<th width="250">正文</th>
+						<th>文章</th>
+						<th>日期</th>
+						<th width="100">是否审核</th>
+						<th width="100">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="comments"" id="comment"}
+					<tr class="text-c">
+						<td><input type="checkbox" id="" name="comment_IDs[{$comment.comm_ID}]"></td>
+						<td>{$comment.comm_ID}</td>
+						<td>{$comment.comm_ParentID}</td>
+						<td>{$comment.comm_Name}</td>
+						<td>{$comment.comm_Content}</td>
+						<td>{$comment.comm_LogID}</td>
+						<td>{$comment.comm_PostTime}</td>
+						<td class="td-status">
+							{eq name="comment.comm_IsChecking" value="1"}
+							<span class="label label-success radius">已审核</span>
+							{/eq}
+							{eq name="comment.comm_IsChecking" value="0"}
+							<span class="label label-default radius">未审核</span>
+							{/eq}
+						</td>
+
+						<td class="td-manage">
+							{eq name="comment.comm_IsChecking" value="1"}
+							<a style="text-decoration:none" onClick="comment_stop(this,{$comment.comm_ID})" href="javascript:;" title="取消审核">
+								<i class="Hui-iconfont">&#xe631;</i>
+							</a>
+							{/eq}
+							{eq name="comment.comm_IsChecking" value="0"}
+							<a onClick="comment_start(this,{$comment.comm_ID})" href="javascript:;" title="审核通过" style="text-decoration:none">
+								<i class="Hui-iconfont">&#xe615;</i>
+							</a>
+							{/eq}
+							<a title="删除" href="javascript:;" onclick="comment_del(this,{$comment.comm_ID})" class="ml-5" style="text-decoration:none">
+								<i class="Hui-iconfont">&#xe6e2;</i>
+							</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+			</form>
+		</article>
+	</div>
+</section>
+{/block}
+
+{block name="js"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+	/*
+		参数解释：
+		title	标题
+		url		请求的url
+		id		需要操作的数据id
+		w		弹出层宽度（缺省调默认值）
+		h		弹出层高度（缺省调默认值）
+	*/
+	/*管理员-增加*/
+	function admin_add(title, url, w, h) {
+		layer_show(title, url, w, h);
+	}
+	/*管理员-删除*/
+	function comment_del(obj, id) {
+		layer.confirm('确认要删除吗？', function (index) {
+			//此处请求后台程序，下方是成功后的前台处理……
+			$.post("{:url('comment/deleteComment')}",{id:id},function(data){
+				if(data.status === 1){
+					$(obj).parents("tr").remove();
+					layer.msg('已删除!', { icon: 1, time: 1000 });
+				}else{
+					layer.msg('删除失败!', { icon: 2, time: 1000 });
+				}
+			})
+
+		});
+	}
+	/*管理员-编辑*/
+	function admin_edit(title, url, w, h) {
+		layer_show(title, url, w, h);
+	}
+	/*管理员-停用*/
+	function comment_stop(obj, id) {
+		layer.confirm('确认审核不通过吗？', function (index) {
+			//此处请求后台程序，下方是成功后的前台处理……
+			$.post("{:url('comment/stopComment')}", { id: id }, function (data) {
+				if (data.status === 1) {
+					$(obj).parents("tr").find(".td-manage").prepend('<a onClick="comment_start(this,' + id + ')" href="javascript:;" title="审核通过" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>');
+					$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">未审核</span>');
+					$(obj).remove();
+					layer.msg('已审核!', { icon: 5, time: 1000 });
+				} else {
+					layer.msg('审核失败!', { icon: 5, time: 1000 });
+				}
+			})
+		});
+	}
+
+	/*管理员-启用*/
+	function comment_start(obj, id) {
+		layer.confirm('确认要审核通过吗？', function (index) {
+			//此处请求后台程序，下方是成功后的前台处理……
+			$.post("{:url('comment/startComment')}", { id: id }, function (data) {
+				if (data.status === 1) {
+					$(obj).parents("tr").find(".td-manage").prepend('<a onClick="comment_stop(this,'+id+')" href="javascript:;" title="审核不通过" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;</i></a>');
+					$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已审核</span>');
+					$(obj).remove();
+					layer.msg('已审核!', { icon: 6, time: 1000 });
+				} else {
+					layer.msg('审核失败!', { icon: 5, time: 1000 });
+				}
+			})
+		});
+	}
+
+	function agreeComment(){
+		$.post("{:url('comment/agreeComment')}",$('#comment_post').serialize(),function(data){
+			if(data.status == 1){
+				layer.msg(data.message, { icon: 6, time: 1000 });
+				location.reload();
+			}
+			layer.msg(data.message, { icon: 5, time: 1000 });
+		});
+	}
+
+	function noComment(){
+		$.post("{:url('comment/noComment')}",$('#comment_post').serialize(),function(data){
+			if(data.status == 1){
+				layer.msg(data.message, { icon: 6, time: 1000 });
+				location.reload();
+			}
+			layer.msg(data.message, { icon: 5, time: 1000 });
+		});
+	}
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+{/block}
+</body>
+
+</html>

@@ -34,7 +34,13 @@ class User extends Base
 
     //显示用户管理页面
     public function showUsers(){
-        $users = Member::all();
+        $user_info = Session::get('user_info');
+        if($user_info['mem_Level']==1){
+            $users = Member::all();
+        }else{
+            $users = Member::where('mem_ID','=',$user_info['mem_ID'])->select();
+        }
+        
         $this->assign('users',$users);
         return $this->fetch('user/admin-list');
     }
