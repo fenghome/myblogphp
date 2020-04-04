@@ -36,7 +36,7 @@ class Comment extends Base{
     return ['status'=>$status,'message'=>$message];
   }
 
-  public function NoComment(Request $request){
+  public function noComment(Request $request){
     $data = $request->param();
     $updateList = [];
     foreach($data['comment_IDs'] as $key=>$value){
@@ -45,7 +45,7 @@ class Comment extends Base{
     }
 
     $comments = new CommentModel;
-    $res = $comments->saveAll($updateList,false);
+    $res = $comments->saveAll($updateList);
     if(!$res){
       $status = 0;
       $message = "批量审核不通过失败";

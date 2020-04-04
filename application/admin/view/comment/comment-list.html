@@ -15,10 +15,11 @@
 		<form id="comment_post">
 			<div class="cl pd-5 bg-1 bk-gray mt-20">
 				<span class="l">
-					<a href="javascript:;" onclick="agreeComment()" class="btn btn-danger radius">
+					<button onClick="agreeComment();" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存草稿</button>
+					<a  onclick="agreeComment()" class="btn btn-danger radius">
 						审核所选项目
 					</a>
-					<a href="javascript:;" onclick="noComment()" class="btn btn-primary radius">
+					<a  onclick="noComment()" class="btn btn-primary radius">
 						不通过所选项目
 					</a>
 
@@ -162,12 +163,25 @@
 
 	function agreeComment(){
 		$.post("{:url('comment/agreeComment')}",$('#comment_post').serialize(),function(data){
-			// if(data.status == 1){
-			// 	layer.msg(data.message, { icon: 6, time: 1000 });
-			// 	location.reload();
-			// }
-			// layer.msg(data.message, { icon: 5, time: 1000 });
+			if(data.status == 1){
+				layer.msg('aaaa', { icon: 6, time: 3000 ,end:function(){
+					location.reload();
+				}},);
+			}
+			layer.msg(data.message, { icon: 5, time: 1000 });
 		});
+	}
+
+	function noComment(){
+		$.post("{:url('comment/noComment')}",$('#comment_post').serialize(),function(data){
+			if(data.status == 1){
+				layer.msg('bbb', { icon: 6, time: 3000 ,end:function(){
+					alert('aaa');
+				}},);
+
+			}
+			layer.msg(data.message, { icon: 5, time: 1000 });
+		})
 	}
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

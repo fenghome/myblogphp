@@ -29,6 +29,7 @@ class User extends Base
     //用户注销
     public function logout(Request $request){
         Session::delete('user_info');
+        $this->success('注销成功', 'index/index/login');
     }
 
     //显示用户管理页面
